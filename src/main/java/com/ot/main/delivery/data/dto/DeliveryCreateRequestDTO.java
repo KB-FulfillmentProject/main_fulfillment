@@ -26,5 +26,7 @@ public class DeliveryCreateRequestDTO {
 	private Integer stockCount;
 	
 	private String productCode;
+	
+	
     
 }

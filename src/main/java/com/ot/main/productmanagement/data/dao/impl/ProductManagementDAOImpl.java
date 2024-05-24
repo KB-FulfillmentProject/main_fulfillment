@@ -103,14 +103,18 @@ public class ProductManagementDAOImpl implements ProductManagementDAO{
 	//재고 비교
 	@Override
 	public ProductManagement compareStockAndSafetyStock(String productCode) {
-	
+		System.out.println("productCode : " + productCode);
 		ProductManagement compareManagement = productManagementRepository.findByProductCode(productCode);
+		System.out.println("==============================compareManagement=======================================");
+		System.out.println(compareManagement);
+		System.out.println("==============================compareManagement=======================================");
+		
 		
 		if (compareManagement != null) {
 			Integer compareProductStock = compareManagement.getProductStock();
 			Integer compareSafetyStock = compareManagement.getSafetyStock();
 			
-			if (compareProductStock != null && compareSafetyStock!= null &&   compareProductStock <= compareSafetyStock ) {
+			if (compareProductStock != null && compareSafetyStock!= null &&  compareProductStock <= compareSafetyStock ) {
 				System.out.println("compareProductStock : " + compareProductStock + ":::::::::: compareSafetyStock : " +  compareSafetyStock);
 				System.out.println("입고요청");
 			

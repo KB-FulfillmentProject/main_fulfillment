@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ot.main.delivery.data.dto.DeliveryCreateRequestDTO;
+import com.ot.main.delivery.service.DeliveryService;
 import com.ot.main.productmanagement.controller.ProductManagementController;
 import com.ot.main.productmanagement.data.dto.MainToShopDTO;
 import com.ot.main.productmanagement.data.dto.ProductManagementCompareResponseDTO;
@@ -30,10 +32,12 @@ import com.ot.main.productmanagement.service.ProductManagementService;
 public class ProductManagementControllerImpl implements ProductManagementController {
 
 	private final ProductManagementService productManagementService;
-
+	private final DeliveryService deliveryService;
+	
 	@Autowired
-	public ProductManagementControllerImpl(ProductManagementService productManagementService) {
+	public ProductManagementControllerImpl(ProductManagementService productManagementService, DeliveryService deliveryService) {
 		this.productManagementService = productManagementService;
+		this.deliveryService = deliveryService;
 	}
 
 	// 재고 생성
@@ -142,7 +146,7 @@ public class ProductManagementControllerImpl implements ProductManagementControl
 	
 	// WebClient 통신 메인 -> 쇼핑 (요청)
 	@PostMapping("/productManagement/mainToShop")
-	public ResponseEntity<MainToShopDTO> mainToShop(@ModelAttribute MainToShopDTO mainToShopDTO){
+	public ResponseEntity<MainToShopDTO> mainToShop(@RequestBody MainToShopDTO mainToShopDTO){
 		System.out.println(mainToShopDTO);
 		return productManagementService.mainToShop(mainToShopDTO);
 	}
@@ -151,8 +155,27 @@ public class ProductManagementControllerImpl implements ProductManagementControl
 	// WebClient 통신 쇼핑 -> 메인 (응답)  
 	@PostMapping("/productManagement/shopToMain")
 	public ResponseEntity<ShopToMainResponseDTO> shopToMain(@RequestBody ShopToMainResponseDTO shopToMainResponseDTO){
-		System.out.println(shopToMainResponseDTO.getProductCode());
-		System.out.println(shopToMainResponseDTO.getProductName());
+		System.out.println("---------------------------------------------------------");
+		System.out.println(shopToMainResponseDTO);
+		// 배송.create();
+		DeliveryCreateRequestDTO deliveryCreateRequestDTO = new DeliveryCreateRequestDTO();
+		deliveryCreateRequestDTO.setUserName(shopToMainResponseDTO.getUserName());
+		deliveryCreateRequestDTO.setHp1(shopToMainResponseDTO.getHp1());
+		deliveryCreateRequestDTO.setHp2(shopToMainResponseDTO.getHp2());
+		deliveryCreateRequestDTO.setHp3(shopToMainResponseDTO.getHp3());
+		deliveryCreateRequestDTO.setAddress(shopToMainResponseDTO.getAddress());
+		deliveryCreateRequestDTO.setZipcode(shopToMainResponseDTO.getZipcode());
+		deliveryCreateRequestDTO.setProductName(shopToMainResponseDTO.getProductName());
+		deliveryCreateRequestDTO.setStockCount(shopToMainResponseDTO.getOrderCount());
+		deliveryCreateRequestDTO.setProductCode(shopToMainResponseDTO.getProductCode());
+		System.out.println(deliveryCreateRequestDTO);
+		deliveryService.createDelivery(deliveryCreateRequestDTO);
+		
+		System.out.println("---------------------------------------------------------");
+		
+		// 재고 관리 안전재고와 현재 재고 비교
+		productManagementService.compareStockAndSafetyStock(shopToMainResponseDTO.getProductCode());
+		
 		
 		return ResponseEntity.status(HttpStatus.OK).body(shopToMainResponseDTO);
 	}

@@ -24,11 +24,11 @@ public class Delivery {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "delivery_seq")
 	private Long id; 
 
-	@Column(nullable = false)
+	@Column(nullable = false , name="trackingnumber")
 	@Digits(integer = 10, fraction = 0)
 	private Integer trackingNumber;
 	
-	@Column(nullable = false, name="userName")
+	@Column(nullable = false, name="username")
 	private String userName;
 	
 	@Column(nullable = false)
@@ -46,13 +46,13 @@ public class Delivery {
 	@Column(nullable = false)
 	private String zipcode;
 	
-	@Column(nullable = false, name="productName")
+	@Column(nullable = false, name="productname")
 	private String productName;
 	
-	@Column(nullable = false, name="stockCount")
+	@Column(nullable = false, name="stockcount")
 	private Integer stockCount;
 	
-	@Column(nullable = false, name="statusDelivery")
+	@Column(nullable = false, name="statusdelivery")
 	private String statusDelivery;
 	
 	@Column(nullable = false, name="productcode")
